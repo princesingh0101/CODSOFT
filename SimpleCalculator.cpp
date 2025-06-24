@@ -1,73 +1,52 @@
 #include <iostream>
 #include <limits>
-#include <string> // For std::string to handle user's 'y/n' input
+#include <string> 
 
-int main() {
-    double num1, num2;
-    char operation;
-    std::string continueChoice; // To store user's choice to continue
+int main() { double num1, num2; char operation; std::string continueChoice; 
+    std::cout << "Hi! Together, let's do some math." << std::endl;
 
-    std::cout << "Greetings! Let's do some math together." << std::endl;
+    do { std::cout << "----------------------------------" << std::endl;
+         std::cout << "Please enter your first number: ";
+          while (!(std::cin >> num1)) { std::cout << "Sorry! That number is invalid. Try again: ";
+             std::cin.clear(); std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); }
 
-    do {
-        std::cout << "\n-------------------------------------" << std::endl;
-        std::cout << "Enter your first number, please: ";
-        while (!(std::cin >> num1)) {
-            std::cout << "Oops! That's not a valid number. Try again: ";
-            std::cin.clear();
+        std::cout << "Now, what action are you interested in carrying out? (+, -, *, /): "; 
+        while (!(std::cin >> operation) || (operation!= '+' && operation!= '-' && operation!= '*' && operation!= '/')) { std::cout << "Well, that's not a legitimate operation. Please select from +, -, *, /: "; 
+            std::cin.clear(); 
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        }
+         }
 
-        std::cout << "Now, what operation would you like to perform? (+, -, *, /): ";
-        while (!(std::cin >> operation) || (operation != '+' && operation != '-' && operation != '*' && operation != '/')) {
-            std::cout << "Hmm, that's not a valid operation. Please pick one from +, -, *, /: ";
+        std::cout << "Excellent! What is your second number? : "; while (!(std::cin >> num2)) { std::cout << "Friend, it's not a number! Kindly input a valid number: "; 
             std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        }
-
-        std::cout << "Great! And what's your second number? : ";
-        while (!(std::cin >> num2)) {
-            std::cout << "Not a number, friend! Please enter a valid number: ";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        }
-
-        double result;
-
-        switch (operation) {
-            case '+':
-                result = num1 + num2;
-                std::cout << "Alright, " << num1 << " + " << num2 << " equals: " << result << std::endl;
-                break;
-            case '-':
-                result = num1 - num2;
-                std::cout << "So, " << num1 << " - " << num2 << " equals: " << result << std::endl;
-                break;
-            case '*':
-                result = num1 * num2;
-                std::cout << "Multiplying " << num1 << " by " << num2 << " gives us: " << result << std::endl;
-                break;
-            case '/':
-                if (num2 != 0) {
-                    result = num1 / num2;
-                    std::cout << "Dividing " << num1 << " by " << num2 << " results in: " << result << std::endl;
-                } else {
-                    std::cout << "Oh dear! We can't divide by zero. Please try again with a different second number." << std::endl;
+                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
                 }
-                break;
-            default:
-                std::cout << "Something went unexpectedly wrong! My apologies." << std::endl;
-                break;
-        }
+        
+                double outcome;
+        
+               
+                switch (operation) { case '+': outcome = num1 + num2; break; case '-': outcome = num1 - num2; break;
 
-        std::cout << "\nWould you like to perform another calculation? (yes/no): ";
-        std::cin.clear(); // Clear any potential error flags from previous input
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the buffer
-        std::getline(std::cin, continueChoice); // Read the entire line
-
-    } while (continueChoice == "yes" || continueChoice == "y" || continueChoice == "Yes" || continueChoice == "Y");
-
-    std::cout << "\nThank you for using the calculator! Have a great day!" << std::endl;
-
-    return 0;
-}
+                        case '*':
+                            outcome = num1 * num2;
+                            break;
+                        case '/':
+                            if (num2 != 0)
+                                outcome = num1 / num2;
+                            else {
+                                std::cout << "Error: Division by zero!" << std::endl;
+                                continue;
+                            }
+                            break;
+                    }
+    
+                    std::cout << "Result: " << outcome << std::endl;
+    
+                    std::cout << "Do you want to do one more calculation? (y/n): ";
+                    std::cin >> continueChoice;
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    
+                } while (continueChoice == "y" || continueChoice == "Y");
+    
+                std::cout << "Thank you for utilizing the calculator. Goodbye!" << std::endl;
+                return 0;
+            }

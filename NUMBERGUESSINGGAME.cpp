@@ -4,7 +4,8 @@
 
 #include <limits>
 
-int main() { std::srand(static_cast<unsigned int>(std::time(0)));
+int main() { 
+    std::srand(static_cast<unsigned int>(std::time(0)));
 
     const int MAX_NUM = 100; const int MIN_NUM = 1;
 
@@ -29,5 +30,5 @@ int main() { std::srand(static_cast<unsigned int>(std::time(0)));
             std::cout << "Congratulations! You correctly guessed the number " << secretNumber;
             std::cout << " in " << attempts << " attempts." << std::endl;
         }
-
+    }
     return 0; }

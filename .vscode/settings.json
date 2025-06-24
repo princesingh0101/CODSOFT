@@ -1,6 +1,11 @@
 {
     "files.associations": {
+<<<<<<< HEAD
         "iostream": "cpp",
         "ctime": "cpp"
+=======
+        "limits": "cpp",
+        "iostream": "cpp"
+>>>>>>> f43b43e (Task2 Project)
     }
 }
