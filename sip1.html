@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess The Number!</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif; /* Using Inter font */
+            background-color: #f0f4f8; /* Light blue-gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            margin: 0;
+            padding: 20px; /* Add some padding for smaller screens */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+        }
+        .game-container {
+            background-color: #ffffff; /* White background for the game card */
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            padding: 2.5rem; /* Increased padding */
+            text-align: center;
+            max-width: 500px; /* Max width for larger screens */
+            width: 100%; /* Full width on smaller screens */
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* Space between elements */
+        }
+        .input-field {
+            padding: 0.75rem 1rem; /* Adjust padding for input */
+            border: 2px solid #cbd5e1; /* Light gray border */
+            border-radius: 0.75rem; /* Rounded input field */
+            width: 100%;
+            font-size: 1.125rem; /* Larger font size for input */
+            text-align: center;
+            outline: none; /* Remove outline on focus */
+            transition: border-color 0.2s ease-in-out; /* Smooth transition for border */
+        }
+        .input-field:focus {
+            border-color: #6366f1; /* Indigo border on focus */
+        }
+        .guess-button {
+            background-image: linear-gradient(to right, #6366f1, #8b5cf6); /* Gradient background */
+            color: #ffffff; /* White text */
+            padding: 0.75rem 1.5rem; /* Adjust padding for button */
+            border-radius: 0.75rem; /* Rounded button */
+            font-size: 1.25rem; /* Larger font size for button */
+            font-weight: 600; /* Semi-bold */
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transitions */
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3); /* Button shadow */
+        }
+        .guess-button:hover {
+            transform: translateY(-2px); /* Slight lift on hover */
+            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4); /* Enhanced shadow on hover */
+        }
+        .message {
+            font-size: 1.125rem; /* Larger font size for messages */
+            color: #374151; /* Dark gray text */
+            min-height: 24px; /* Ensure message area has height even when empty */
+        }
+        .new-game-button {
+            background-color: #10b981; /* Green for new game button */
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            margin-top: 1rem; /* Space above new game button */
+            transition: background-color 0.2s ease-in-out;
+        }
+        .new-game-button:hover {
+            background-color: #059669; /* Darker green on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-4">Guess The Number!</h1>
+        <p class="text-lg text-gray-700 mb-6">I'm thinking of a number between 1 and 100. Can you guess it?</p>
+        <input type="number" id="guessInput" class="input-field" placeholder="Enter your guess (1-100)">
+        <button id="submitGuess" class="guess-button">Submit Guess</button>
+        <p id="message" class="message"></p>
+        <button id="newGameButton" class="new-game-button hidden">Play Again</button>
+    </div>
+
+    <script>
+        // Global variables for the game
+        let randomNumber;
+        let attempts = 0;
+        const maxAttempts = 10; // Optional: Set a limit for attempts
+        const guessInput = document.getElementById('guessInput');
+        const submitGuessButton = document.getElementById('submitGuess');
+        const messageDisplay = document.getElementById('message');
+        const newGameButton = document.getElementById('newGameButton');
+
+        /**
+         * Initializes a new game.
+         * Generates a new random number, resets attempts, and updates UI.
+         */
+        function initializeGame() {
+            // Generate a random number between 1 and 100 (inclusive)
+            randomNumber = Math.floor(Math.random() * 100) + 1;
+            attempts = 0; // Reset the number of attempts
+            messageDisplay.textContent = ""; // Clear any previous messages
+            guessInput.value = ""; // Clear the input field
+            guessInput.disabled = false; // Enable the input field
+            submitGuessButton.disabled = false; // Enable the submit button
+            newGameButton.classList.add('hidden'); // Hide the "Play Again" button
+            console.log("New game started. Random number (for debugging): " + randomNumber); // For testing
+        }
+
+        /**
+         * Handles the user's guess submission.
+         * Validates input, compares with the random number, and provides feedback.
+         */
+        function checkGuess() {
+            const userGuess = parseInt(guessInput.value); // Get the integer value of the guess
+
+            // Input validation: Check if the input is a valid number between 1 and 100
+            if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                messageDisplay.textContent = "Please enter a valid number between 1 and 100.";
+                messageDisplay.style.color = '#dc2626'; // Red for error
+                return; // Exit the function if input is invalid
+            }
+
+            attempts++; // Increment the attempt counter
+
+            // Compare the user's guess with the random number
+            if (userGuess === randomNumber) {
+                messageDisplay.textContent = `Congratulations! You guessed the number ${randomNumber} in ${attempts} attempts!`;
+                messageDisplay.style.color = '#10b981'; // Green for success
+                endGame(true); // Call endGame with true for victory
+            } else if (userGuess < randomNumber) {
+                messageDisplay.textContent = "Too low! Try again.";
+                messageDisplay.style.color = '#f59e0b'; // Orange for too low
+            } else { // userGuess > randomNumber
+                messageDisplay.textContent = "Too high! Try again.";
+                messageDisplay.style.color = '#f59e0b'; // Orange for too high
+            }
+
+            // Optional: Check if max attempts reached (if maxAttempts is set)
+            // if (maxAttempts && attempts >= maxAttempts && userGuess !== randomNumber) {
+            //     messageDisplay.textContent = `Game Over! You ran out of attempts. The number was ${randomNumber}.`;
+            //     messageDisplay.style.color = '#dc2626'; // Red for game over
+            //     endGame(false); // Call endGame with false for defeat
+            // }
+
+            // Clear input field after each guess (optional)
+            guessInput.value = "";
+            guessInput.focus(); // Keep focus on the input field for quicker next guess
+        }
+
+        /**
+         * Ends the current game session.
+         * Disables input and guess button, shows "Play Again" button.
+         * @param {boolean} won - True if the user won, false otherwise.
+         */
+        function endGame(won) {
+            guessInput.disabled = true; // Disable input after game ends
+            submitGuessButton.disabled = true; // Disable submit button
+            newGameButton.classList.remove('hidden'); // Show the "Play Again" button
+        }
+
+        // Event Listeners:
+        // Listen for clicks on the "Submit Guess" button
+        submitGuessButton.addEventListener('click', checkGuess);
+
+        // Listen for the "Enter" key press in the input field
+        guessInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkGuess();
+            }
+        });
+
+        // Listen for clicks on the "Play Again" button
+        newGameButton.addEventListener('click', initializeGame);
+
+        // Initialize the game when the window loads
+        window.onload = initializeGame;
+    </script>
+</body>
+</html>
